@@ -18,6 +18,8 @@ pub struct Endpoints {
     pub files: String,
     /// Navidrome Subsonic REST base.
     pub music_rest: String,
+    /// Anki sync server URL shown to the user.
+    pub anki_sync: String,
 }
 
 impl Endpoints {
@@ -27,6 +29,7 @@ impl Endpoints {
             hub_api: "https://example.org/hub".to_owned(),
             files: "https://files.example.org".to_owned(),
             music_rest: "https://music.example.org/music/rest".to_owned(),
+            anki_sync: "https://anki.example.org/".to_owned(),
         }
     }
 }
@@ -36,6 +39,7 @@ pub fn modules(endpoints: &Endpoints) -> Vec<ModuleDef> {
     vec![
         hub_mod_files::definition(&endpoints.files),
         hub_mod_music::definition(&endpoints.music_rest),
+        hub_mod_anki::definition(&endpoints.anki_sync),
     ]
 }
 

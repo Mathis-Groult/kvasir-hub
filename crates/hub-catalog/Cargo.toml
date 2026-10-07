@@ -9,6 +9,7 @@ publish.workspace = true
 hub-core = { workspace = true }
 hub-directory = { workspace = true }
 hub-http = { workspace = true }
+hub-mod-anki = { workspace = true }
 hub-mod-files = { workspace = true }
 hub-mod-music = { workspace = true }
 hub-store-file = { workspace = true }

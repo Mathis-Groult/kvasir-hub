@@ -1399,6 +1399,7 @@ dependencies = [
  "hub-core",
  "hub-directory",
  "hub-http",
+ "hub-mod-anki",
  "hub-mod-files",
  "hub-mod-music",
  "hub-store-file",
@@ -1442,6 +1443,14 @@ dependencies = [
  "hub-wire",
  "serde_json",
  "tiny_http",
+]
+
+[[package]]
+name = "hub-mod-anki"
+version = "0.1.0"
+dependencies = [
+ "hub-core",
+ "serde_json",
 ]
 
 [[package]]

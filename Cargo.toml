@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["shell-tauri", "crates/hub-wire", "crates/hub-core", "crates/hub-http", "crates/hub-store-file", "crates/hub-directory", "crates/hub-api", "crates/hub-mod-music", "crates/hub-mod-files", "crates/hub-rpc", "crates/hub-catalog", "crates/hub-web", "crates/hub-media-http"]
+members = ["shell-tauri", "crates/hub-wire", "crates/hub-core", "crates/hub-http", "crates/hub-store-file", "crates/hub-directory", "crates/hub-api", "crates/hub-mod-music", "crates/hub-mod-files", "crates/hub-rpc", "crates/hub-catalog", "crates/hub-web", "crates/hub-media-http", "crates/hub-mod-anki"]
 
 [workspace.package]
 edition = "2024"
@@ -24,6 +24,7 @@ hub-http = { path = "crates/hub-http" }
 hub-directory = { path = "crates/hub-directory" }
 hub-store-file = { path = "crates/hub-store-file" }
 hub-mod-music = { path = "crates/hub-mod-music" }
+hub-mod-anki = { path = "crates/hub-mod-anki" }
 hub-mod-files = { path = "crates/hub-mod-files" }
 hub-media-http = { path = "crates/hub-media-http" }
 hub-rpc = { path = "crates/hub-rpc" }

@@ -83,3 +83,6 @@
 @media (min-width: 52.5rem) { .account { display: none; } }
 
 .hero .page { gap: var(--space-2); }
+
+.code { font: 0.9375rem / 1.4 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+.steps { display: grid; gap: var(--space-2); padding-left: var(--space-5); list-style: decimal; }

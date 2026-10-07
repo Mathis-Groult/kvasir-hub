@@ -1,0 +1,10 @@
+[package]
+name = "hub-mod-anki"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+hub-core = { workspace = true }
+serde_json = { workspace = true }
