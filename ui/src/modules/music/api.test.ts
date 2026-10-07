@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { decodeAlbum, decodeOverview, decodeSong } from './api.ts';
+import { decodeAlbum, decodeOverview, decodeSong, pickShowcase } from './api.ts';
 
 // Literal answers captured from the Rust core against production on 2026-10-07.
 const ALBUM = {
@@ -26,6 +26,18 @@ test('a wrong type is refused instead of coerced', () => {
 test('overview needs all three shelves', () => {
   assert.equal(decodeOverview({ newest: [ALBUM], recent: [], frequent: [] }).newest.length, 1);
   assert.throws(() => decodeOverview({ newest: [] }), /recent must be a list/);
+});
+
+const album = (id: string) => decodeAlbum({ ...ALBUM, id });
+
+test('the showcase lists recent albums first and fills up with new ones, without repeats', () => {
+  const overview = { recent: [album('a')], frequent: [], newest: [album('a'), album('b'), album('c'), album('d'), album('e')] };
+  assert.deepEqual(pickShowcase(overview, 4).map((a) => a.id), ['a', 'b', 'c', 'd']);
+});
+
+test('the showcase is shorter when the library is small and empty when there is nothing', () => {
+  assert.equal(pickShowcase({ recent: [], frequent: [], newest: [album('a')] }, 4).length, 1);
+  assert.equal(pickShowcase({ recent: [], frequent: [], newest: [] }, 4).length, 0);
 });
 
 test('a song decodes with its starred flag', () => {

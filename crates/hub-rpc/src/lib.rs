@@ -213,10 +213,20 @@ pub fn prefix_content_range(got: u64, total: u64) -> String {
 pub fn safe_file_name(name: &str) -> String {
     let cleaned: String = name
         .chars()
-        .map(|c| if c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|') { '_' } else { c })
+        .map(|c| {
+            if c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|') {
+                '_'
+            } else {
+                c
+            }
+        })
         .collect();
     let trimmed = cleaned.trim().trim_start_matches('.');
-    if trimmed.is_empty() { "download".to_owned() } else { trimmed.to_owned() }
+    if trimmed.is_empty() {
+        "download".to_owned()
+    } else {
+        trimmed.to_owned()
+    }
 }
 
 /// `photo.jpg` -> `photo (2).jpg` for attempt 2; attempt 1 is the name itself.

@@ -24,8 +24,8 @@ export class HubRequestError extends Error {
 interface Backend {
   rpc(command: string, args: unknown): Promise<unknown>;
   upload(target: string, body: ArrayBuffer): Promise<unknown>;
-  /** Origin that serves `/<module>/<op>?..` media. */
-  readonly mediaBase: string;
+  /** Origin that serves `/<module>/<op>?..` media; known once `initTransport` has run. */
+  mediaBase: string;
 }
 
 interface TauriInternals {
@@ -36,11 +36,6 @@ function tauriInternals(): TauriInternals | null {
   const candidate: unknown = Reflect.get(window, '__TAURI_INTERNALS__');
   if (typeof candidate !== 'object' || candidate === null) return null;
   return typeof Reflect.get(candidate, 'invoke') === 'function' ? (candidate as TauriInternals) : null;
-}
-
-/** Tauri serves custom schemes as `scheme://localhost` except on Windows and Android. */
-function tauriMediaBase(): string {
-  return /Android|Windows/.test(navigator.userAgent) ? 'http://hubmedia.localhost' : 'hubmedia://localhost';
 }
 
 function webBackend(): Backend {
@@ -59,7 +54,8 @@ function webBackend(): Backend {
 
 function tauriBackend(internals: TauriInternals): Backend {
   return {
-    mediaBase: tauriMediaBase(),
+    // Filled by initTransport: the loopback server picks its port at start-up.
+    mediaBase: '',
     rpc: (command, args) => internals.invoke('hub_rpc', { command, args }),
     upload: (target, body) => internals.invoke('hub_upload', body, { headers: { 'x-hub-target': target } }),
   };
@@ -75,6 +71,15 @@ function backend(): Backend {
     chosen = internals === null ? webBackend() : tauriBackend(internals);
   }
   return chosen;
+}
+
+/** Must finish before any media URL is built: asks the app for its loopback media server. */
+export async function initTransport(): Promise<void> {
+  const internals = tauriInternals();
+  if (internals === null) return;
+  const base = await internals.invoke('hub_media_base');
+  if (typeof base !== 'string' || base === '') throw new Error('the app did not provide a media server');
+  backend().mediaBase = base;
 }
 
 /** Reads `{ok:true,data}` or `{ok:false,error}`; throws `HubRequestError` for the latter. */

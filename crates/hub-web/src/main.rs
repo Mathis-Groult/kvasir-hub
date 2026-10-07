@@ -6,13 +6,13 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use hub_catalog::Endpoints;
-use hub_core::{Hub, HubError};
-use hub_rpc::{Envelope, dispatch, parse_media_target, upload};
-use hub_web::{content_disposition, content_type, media_cache_control, resolve_static};
+use hub_core::Hub;
+use hub_rpc::{Envelope, dispatch, upload};
+use hub_web::{content_type, resolve_static};
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
-use tiny_http::{Header, Method, Request, Response, StatusCode};
+use tiny_http::{Header, Method, Request, Response};
 
 /// Largest upload accepted in memory (see plan, risks).
 const MAX_UPLOAD_BYTES: usize = 256 * 1024 * 1024;
@@ -41,17 +41,6 @@ fn json_response(envelope: &Envelope) -> Response<std::io::Cursor<Vec<u8>>> {
     Response::from_string(envelope.to_json())
         .with_header(header("Content-Type", "application/json"))
         .with_header(header("Cache-Control", "no-store"))
-}
-
-fn error_response(error: &HubError) -> Response<std::io::Cursor<Vec<u8>>> {
-    let status = match error {
-        HubError::NotSignedIn => 401,
-        HubError::Forbidden { .. } => 403,
-        HubError::NotFound { .. } | HubError::UnknownModule(_) => 404,
-        HubError::BadArgs { .. } => 400,
-        _ => 502,
-    };
-    Response::from_string(error.view().message).with_status_code(status)
 }
 
 fn read_body(request: &mut Request, limit: usize) -> Result<Vec<u8>, String> {
@@ -93,32 +82,11 @@ fn handle(hub: &Hub, ui_dir: &std::path::Path, mut request: Request) {
         }
         (Method::Get, path) if path.starts_with("/media/") => {
             let target = path.trim_start_matches("/media");
-            match parse_media_target(target, range.as_deref())
-                .and_then(|(module, req)| hub.media(&module, &req).map(|r| (req.op, r)))
-            {
-                Ok((op, media)) => {
-                    let mut response = Response::new(
-                        StatusCode(media.status),
-                        vec![
-                            header("Content-Type", &media.content_type),
-                            header("Accept-Ranges", "bytes"),
-                            header("Cache-Control", media_cache_control(&op)),
-                        ],
-                        media.body,
-                        media.content_length.and_then(|n| usize::try_from(n).ok()),
-                        None,
-                    );
-                    if let Some(range) = &media.content_range {
-                        response.add_header(header("Content-Range", range));
-                    }
-                    if let (true, Some(name)) = (op == "download", &media.file_name) {
-                        response
-                            .add_header(header("Content-Disposition", &content_disposition(name)));
-                    }
-                    request.respond(response)
-                }
-                Err(e) => request.respond(error_response(&e)),
-            }
+            request.respond(hub_media_http::media_response(
+                hub,
+                target,
+                range.as_deref(),
+            ))
         }
         (Method::Get, path) => {
             let path = path.split('?').next().unwrap_or("/");

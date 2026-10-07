@@ -218,7 +218,10 @@ fn open_ended_ranges_are_closed_at_one_chunk() {
 #[test]
 fn closed_ranges_shrink_only_when_too_big() {
     assert_eq!(bounded_range(Some("bytes=10-19"), CHUNK), "bytes=10-19");
-    assert_eq!(bounded_range(Some("bytes=100-99999"), CHUNK), "bytes=100-1099");
+    assert_eq!(
+        bounded_range(Some("bytes=100-99999"), CHUNK),
+        "bytes=100-1099"
+    );
 }
 
 #[test]
@@ -229,7 +232,14 @@ fn suffix_ranges_are_capped() {
 
 #[test]
 fn unreadable_or_multiple_ranges_fall_back_to_the_first_chunk() {
-    for bad in ["bytes=a-b", "items=1-2", "bytes=1-2,5-6", "bytes=9-3", "bytes=", "garbage"] {
+    for bad in [
+        "bytes=a-b",
+        "items=1-2",
+        "bytes=1-2,5-6",
+        "bytes=9-3",
+        "bytes=",
+        "garbage",
+    ] {
         assert_eq!(bounded_range(Some(bad), CHUNK), "bytes=0-999", "{bad}");
     }
 }
@@ -253,5 +263,8 @@ fn numbered_names_keep_the_extension() {
 
 #[test]
 fn a_prefix_answer_states_what_it_holds_out_of_the_total() {
-    assert_eq!(prefix_content_range(1000, 24_716_686), "bytes 0-999/24716686");
+    assert_eq!(
+        prefix_content_range(1000, 24_716_686),
+        "bytes 0-999/24716686"
+    );
 }

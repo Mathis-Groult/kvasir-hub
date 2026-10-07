@@ -135,6 +135,19 @@ export const musicApi = {
   scrobble: (id: string): Promise<unknown> => call('music', 'scrobble', { id }),
 };
 
+/** Up to `count` albums: recently played first, then the newest ones not already listed. */
+export function pickShowcase(overview: Overview, count: number): readonly Album[] {
+  const seen = new Set<string>();
+  const out: Album[] = [];
+  for (const album of [...overview.recent, ...overview.newest]) {
+    if (seen.has(album.id)) continue;
+    seen.add(album.id);
+    out.push(album);
+    if (out.length === count) break;
+  }
+  return out;
+}
+
 /** Square cover URL; an empty cover id has no URL. */
 export function coverUrl(cover: string, size: number): string | null {
   return cover === '' ? null : mediaUrl('music', 'cover', { id: cover, size: String(size) });

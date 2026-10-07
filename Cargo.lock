@@ -1433,6 +1433,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "hub-media-http"
+version = "0.1.0"
+dependencies = [
+ "getrandom 0.3.4",
+ "hub-core",
+ "hub-rpc",
+ "hub-wire",
+ "serde_json",
+ "tiny_http",
+]
+
+[[package]]
 name = "hub-mod-files"
 version = "0.1.0"
 dependencies = [
@@ -1476,6 +1488,7 @@ dependencies = [
  "clap",
  "hub-catalog",
  "hub-core",
+ "hub-media-http",
  "hub-rpc",
  "serde_json",
  "tiny_http",
@@ -1896,6 +1909,7 @@ version = "0.1.0"
 dependencies = [
  "hub-catalog",
  "hub-core",
+ "hub-media-http",
  "hub-rpc",
  "serde_json",
  "tauri",

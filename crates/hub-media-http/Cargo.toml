@@ -1,0 +1,16 @@
+[package]
+name = "hub-media-http"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+hub-core = { workspace = true }
+hub-rpc = { workspace = true }
+tiny_http = { workspace = true }
+getrandom = "0.3"
+
+[dev-dependencies]
+hub-wire = { workspace = true }
+serde_json = { workspace = true }

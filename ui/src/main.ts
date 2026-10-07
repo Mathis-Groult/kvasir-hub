@@ -3,7 +3,7 @@
 import { h, setChildren } from './core/dom.ts';
 import { icon } from './core/icons.ts';
 import { buildHash, matchRoute, parseHash } from './core/router.ts';
-import { command, failureFrom } from './core/transport.ts';
+import { command, failureFrom, initTransport } from './core/transport.ts';
 import { decodeManifests, decodeMe } from './core/session.ts';
 import { MODULES } from './modules/index.ts';
 import type { PageContext } from './modules/registry.ts';
@@ -20,6 +20,7 @@ const mount: HTMLElement = root;
 
 async function start(): Promise<void> {
   try {
+    await initTransport();
     const restored = await command('restore');
     if (restored === null) await showLogin(mount);
   } catch (error) {
