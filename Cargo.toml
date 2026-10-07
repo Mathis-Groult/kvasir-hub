@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/hub-wire", "crates/hub-core", "crates/hub-http", "crates/hub-store-file", "crates/hub-directory", "crates/hub-api", "crates/hub-mod-music", "crates/hub-mod-files", "crates/hub-rpc", "crates/hub-catalog", "crates/hub-web"]
+members = ["shell-tauri", "crates/hub-wire", "crates/hub-core", "crates/hub-http", "crates/hub-store-file", "crates/hub-directory", "crates/hub-api", "crates/hub-mod-music", "crates/hub-mod-files", "crates/hub-rpc", "crates/hub-catalog", "crates/hub-web"]
 
 [workspace.package]
 edition = "2024"

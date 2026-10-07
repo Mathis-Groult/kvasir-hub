@@ -173,5 +173,69 @@ fn hex(byte: u8) -> Option<u8> {
         .and_then(|d| u8::try_from(d).ok())
 }
 
+/// Largest slice a shell that must buffer responses (Tauri) serves per request.
+pub const MEDIA_CHUNK_BYTES: u64 = 4 * 1024 * 1024;
+
+/// Rewrites a `Range` header so it never asks for more than `chunk` bytes. `None` (no header)
+/// and unreadable or multi-range headers become the first chunk. Used by shells that buffer.
+pub fn bounded_range(range: Option<&str>, chunk: u64) -> String {
+    let first = || format!("bytes=0-{}", chunk.saturating_sub(1));
+    let Some(spec) = range.and_then(|r| r.trim().strip_prefix("bytes=")) else {
+        return first();
+    };
+    if spec.contains(',') {
+        return first();
+    }
+    let Some((from, to)) = spec.split_once('-') else {
+        return first();
+    };
+    match (from.trim().parse::<u64>(), to.trim().parse::<u64>()) {
+        (Ok(start), Ok(end)) if end >= start => {
+            format!("bytes={start}-{}", end.min(start.saturating_add(chunk - 1)))
+        }
+        (Ok(start), Err(_)) if to.trim().is_empty() => {
+            format!("bytes={start}-{}", start.saturating_add(chunk - 1))
+        }
+        (Err(_), Ok(last)) if from.trim().is_empty() && last > 0 => {
+            format!("bytes=-{}", last.min(chunk))
+        }
+        _ => first(),
+    }
+}
+
+/// `Content-Range` for an answer that holds only the first `got` bytes of `total`.
+pub fn prefix_content_range(got: u64, total: u64) -> String {
+    format!("bytes 0-{}/{total}", got.saturating_sub(1))
+}
+
+/// A file name that is safe to create in a download folder: no separators or control
+/// characters, no leading dots, never empty.
+pub fn safe_file_name(name: &str) -> String {
+    let cleaned: String = name
+        .chars()
+        .map(|c| if c.is_control() || matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|') { '_' } else { c })
+        .collect();
+    let trimmed = cleaned.trim().trim_start_matches('.');
+    if trimmed.is_empty() { "download".to_owned() } else { trimmed.to_owned() }
+}
+
+/// `photo.jpg` -> `photo (2).jpg` for attempt 2; attempt 1 is the name itself.
+pub fn numbered_name(name: &str, attempt: u32) -> String {
+    if attempt <= 1 {
+        return name.to_owned();
+    }
+    match name.rsplit_once('.') {
+        Some((stem, ext)) if !stem.is_empty() => format!("{stem} ({attempt}).{ext}"),
+        _ => format!("{name} ({attempt})"),
+    }
+}
+
+impl Envelope {
+    /// The envelope as a JSON value (for shells that return values instead of text).
+    pub fn to_value(&self) -> Value {
+        serde_json::to_value(self).expect("envelope serialises")
+    }
+}
+
 #[cfg(test)]
 mod tests;

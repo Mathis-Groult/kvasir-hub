@@ -201,3 +201,57 @@ fn upload_hands_query_arguments_and_body_to_the_module() {
         json!({"ok": true, "data": {"args": {"name": "a b.txt", "repo": "r"}, "len": 7}})
     );
 }
+
+const CHUNK: u64 = 1000;
+
+#[test]
+fn a_missing_range_becomes_the_first_chunk() {
+    assert_eq!(bounded_range(None, CHUNK), "bytes=0-999");
+}
+
+#[test]
+fn open_ended_ranges_are_closed_at_one_chunk() {
+    assert_eq!(bounded_range(Some("bytes=0-"), CHUNK), "bytes=0-999");
+    assert_eq!(bounded_range(Some("bytes=5000-"), CHUNK), "bytes=5000-5999");
+}
+
+#[test]
+fn closed_ranges_shrink_only_when_too_big() {
+    assert_eq!(bounded_range(Some("bytes=10-19"), CHUNK), "bytes=10-19");
+    assert_eq!(bounded_range(Some("bytes=100-99999"), CHUNK), "bytes=100-1099");
+}
+
+#[test]
+fn suffix_ranges_are_capped() {
+    assert_eq!(bounded_range(Some("bytes=-500"), CHUNK), "bytes=-500");
+    assert_eq!(bounded_range(Some("bytes=-90000"), CHUNK), "bytes=-1000");
+}
+
+#[test]
+fn unreadable_or_multiple_ranges_fall_back_to_the_first_chunk() {
+    for bad in ["bytes=a-b", "items=1-2", "bytes=1-2,5-6", "bytes=9-3", "bytes=", "garbage"] {
+        assert_eq!(bounded_range(Some(bad), CHUNK), "bytes=0-999", "{bad}");
+    }
+}
+
+#[test]
+fn file_names_lose_separators_dots_and_control_characters() {
+    assert_eq!(safe_file_name("../../etc/passwd"), "_.._etc_passwd");
+    assert_eq!(safe_file_name(".hidden"), "hidden");
+    assert_eq!(safe_file_name("a\nb:c.txt"), "a_b_c.txt");
+    assert_eq!(safe_file_name("   "), "download");
+    assert_eq!(safe_file_name("blob é.bin"), "blob é.bin");
+}
+
+#[test]
+fn numbered_names_keep_the_extension() {
+    assert_eq!(numbered_name("photo.jpg", 1), "photo.jpg");
+    assert_eq!(numbered_name("photo.jpg", 2), "photo (2).jpg");
+    assert_eq!(numbered_name("notes", 3), "notes (3)");
+    assert_eq!(numbered_name(".bashrc", 2), ".bashrc (2)");
+}
+
+#[test]
+fn a_prefix_answer_states_what_it_holds_out_of_the_total() {
+    assert_eq!(prefix_content_range(1000, 24_716_686), "bytes 0-999/24716686");
+}

@@ -1,0 +1,89 @@
+/* Design tokens. Spacing follows an 8 px grid; touch targets are at least 48 px (Material 3),
+   which also clears WCAG 2.2's 44 px. Accent is Kvasir's gold, darkened in light mode so text
+   on it keeps >= 4.5:1 contrast. */
+:root {
+  color-scheme: dark light;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --radius-s: 0.5rem;
+  --radius-m: 0.875rem;
+  --radius-l: 1.25rem;
+  --radius-round: 999px;
+
+  --target: 3rem;
+  --rail-width: 15rem;
+  --bottom-nav-height: 4rem;
+  --player-height: 4.5rem;
+  --content-max: 72rem;
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --text-s: 0.8125rem;
+  --text-m: 1rem;
+  --text-l: 1.25rem;
+  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --fast: 160ms;
+
+  /* Dark theme (default). */
+  --bg: hsl(36 30% 5%);
+  --surface-1: hsl(36 14% 10%);
+  --surface-2: hsl(36 12% 14%);
+  --surface-3: hsl(36 10% 19%);
+  --border: hsl(36 10% 24%);
+  --text: hsl(40 25% 94%);
+  --text-dim: hsl(38 12% 72%);
+  --accent: hsl(40 62% 56%);
+  --accent-strong: hsl(40 70% 64%);
+  --on-accent: hsl(36 60% 8%);
+  --good: hsl(142 62% 58%);
+  --warn: hsl(43 96% 60%);
+  --bad: hsl(2 90% 72%);
+  --shadow: 0 0.5rem 2rem hsl(0 0% 0% / 0.45);
+  --scrim: hsl(0 0% 0% / 0.6);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: hsl(40 45% 96%);
+    --surface-1: hsl(0 0% 100%);
+    --surface-2: hsl(40 30% 94%);
+    --surface-3: hsl(40 22% 88%);
+    --border: hsl(38 18% 78%);
+    --text: hsl(36 30% 10%);
+    --text-dim: hsl(36 14% 32%);
+    --accent: hsl(38 78% 30%);
+    --accent-strong: hsl(38 80% 24%);
+    --on-accent: hsl(40 60% 98%);
+    --good: hsl(142 70% 24%);
+    --warn: hsl(32 90% 28%);
+    --bad: hsl(2 70% 40%);
+    --shadow: 0 0.5rem 2rem hsl(36 30% 20% / 0.18);
+    --scrim: hsl(36 20% 10% / 0.5);
+  }
+}
+
+:root[data-theme='light'] {
+  --bg: hsl(40 45% 96%);
+  --surface-1: hsl(0 0% 100%);
+  --surface-2: hsl(40 30% 94%);
+  --surface-3: hsl(40 22% 88%);
+  --border: hsl(38 18% 78%);
+  --text: hsl(36 30% 10%);
+  --text-dim: hsl(36 14% 32%);
+  --accent: hsl(38 78% 30%);
+  --accent-strong: hsl(38 80% 24%);
+  --on-accent: hsl(40 60% 98%);
+  --good: hsl(142 70% 24%);
+  --warn: hsl(32 90% 28%);
+  --bad: hsl(2 70% 40%);
+  --shadow: 0 0.5rem 2rem hsl(36 30% 20% / 0.18);
+  --scrim: hsl(36 20% 10% / 0.5);
+}

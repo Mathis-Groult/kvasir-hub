@@ -2,3 +2,4 @@ target/
 ui/dist/
 ui/node_modules/
 shell-tauri/gen/
+shell-tauri/app-icon.png.bak
