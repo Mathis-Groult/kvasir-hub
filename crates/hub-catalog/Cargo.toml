@@ -1,0 +1,14 @@
+[package]
+name = "hub-catalog"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+hub-core = { workspace = true }
+hub-directory = { workspace = true }
+hub-http = { workspace = true }
+hub-mod-files = { workspace = true }
+hub-mod-music = { workspace = true }
+hub-store-file = { workspace = true }

@@ -1,0 +1,10 @@
+[package]
+name = "hub-http"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+hub-core = { workspace = true }
+ureq = { workspace = true }

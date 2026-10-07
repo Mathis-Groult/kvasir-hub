@@ -1,0 +1,33 @@
+[workspace]
+resolver = "2"
+members = ["crates/hub-wire", "crates/hub-core", "crates/hub-http", "crates/hub-store-file", "crates/hub-directory", "crates/hub-api", "crates/hub-mod-music", "crates/hub-mod-files", "crates/hub-rpc", "crates/hub-catalog", "crates/hub-web"]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+license = "UNLICENSED"
+publish = false
+
+[workspace.dependencies]
+anyhow = "1"
+base64 = "0.22"
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+tiny_http = "0.12"
+ureq = { version = "3", default-features = false, features = ["rustls", "gzip"] }
+hub-wire = { path = "crates/hub-wire" }
+hub-core = { path = "crates/hub-core" }
+hub-http = { path = "crates/hub-http" }
+hub-directory = { path = "crates/hub-directory" }
+hub-store-file = { path = "crates/hub-store-file" }
+hub-mod-music = { path = "crates/hub-mod-music" }
+hub-mod-files = { path = "crates/hub-mod-files" }
+hub-rpc = { path = "crates/hub-rpc" }
+hub-catalog = { path = "crates/hub-catalog" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 4

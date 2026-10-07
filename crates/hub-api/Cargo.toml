@@ -1,0 +1,18 @@
+[package]
+name = "hub-api"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+hub-wire = { workspace = true }
+anyhow = { workspace = true }
+base64 = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+thiserror = { workspace = true }
+ureq = { workspace = true }
+tiny_http = { workspace = true }
