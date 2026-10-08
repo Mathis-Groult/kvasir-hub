@@ -66,7 +66,7 @@ mod tests {
             .map(|d| d.manifest.id)
             .collect();
         assert_eq!(ids.iter().collect::<HashSet<_>>().len(), ids.len());
-        // Known grant ids from kvasir-accounts (`App::as_str`).
+        // Known grant ids from mod-identity (`App::as_str`).
         let known = [
             "kvasir", "usage", "music", "files", "anki", "hermes", "proxy",
         ];

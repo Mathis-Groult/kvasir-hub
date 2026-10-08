@@ -8,7 +8,7 @@ A module is one Rust crate plus one UI folder. The core never changes. Three pla
 | 2 | `crates/hub-catalog/src/lib.rs` | one line in `modules()` and one field in `Endpoints` |
 | 3 | `ui/src/modules/index.ts` | one entry in `MODULES`, pointing at `ui/src/modules/<app>/page.ts` |
 
-If the app needs its own grant, its id must exist in `kvasir-accounts` (`App::as_str`); the hub-api
+If the app needs its own grant, its id must exist in `mod-identity` (`platform/crates/mod-identity`, was `kvasir-accounts`) (`App::as_str`); the hub-api
 `/v1/me` answer lists the ids the account may open, and `Hub` only builds modules whose id is in that list.
 
 ## 1. The Rust crate
