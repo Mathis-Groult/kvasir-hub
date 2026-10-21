@@ -21,7 +21,7 @@ Server side: `crates/hub-api` (systemd `hub-api`, `https://<your-domain>/hub/v1/
 ## Commands
 ```sh
 ./check.sh                         # fmt, clippy -D warnings, all tests, tsc --noEmit, UI tests
-(cd ui && npm install --include=dev && node build.mjs)     # build the UI into ui/dist
+(cd ui && npm ci --include=dev && node build.mjs)          # build the UI into ui/dist (check.sh does this too)
 cargo run -p hub-web -- --secret-file /tmp/hub-secret.json # dev host on 127.0.0.1:4560 (real servers)
 cd shell-tauri && cargo tauri build                        # desktop bundle
 cd shell-tauri && cargo tauri android build                # Android APK
