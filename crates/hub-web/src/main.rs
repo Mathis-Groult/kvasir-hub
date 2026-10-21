@@ -6,7 +6,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use hub_catalog::Endpoints;
-use hub_core::Hub;
+use hub_core::{Hub, SiteDomain};
 use hub_rpc::{Envelope, dispatch, upload};
 use hub_web::{content_type, resolve_static};
 use std::fs::File;
@@ -27,6 +27,9 @@ struct Cli {
     /// Where the credentials rest between runs.
     #[arg(long)]
     secret_file: PathBuf,
+    /// Domain the servers live on, for example `example.org`.
+    #[arg(long, env = "KVASIR_DOMAIN")]
+    domain: String,
 }
 
 /// A header from names and values this file builds. A value an upstream server controls
@@ -109,8 +112,9 @@ fn handle(hub: &Hub, ui_dir: &std::path::Path, mut request: Request) {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
+    let site = SiteDomain::parse(&cli.domain).context("--domain / KVASIR_DOMAIN")?;
     let hub = std::sync::Arc::new(hub_catalog::build(
-        &Endpoints::production(),
+        &Endpoints::for_site(&site),
         &cli.secret_file,
     ));
     let server = tiny_http::Server::http(&cli.listen)

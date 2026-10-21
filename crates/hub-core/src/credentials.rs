@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-/// Kvasir username and password. The password only ever goes to `*.example.org`.
+/// Kvasir username and password. The password only ever goes to the servers of the configured site.
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Credentials {
     pub username: String,

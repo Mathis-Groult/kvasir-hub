@@ -1403,6 +1403,7 @@ dependencies = [
  "hub-mod-files",
  "hub-mod-music",
  "hub-store-file",
+ "thiserror 2.0.21",
 ]
 
 [[package]]

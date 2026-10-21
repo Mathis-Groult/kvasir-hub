@@ -61,8 +61,13 @@ fn hub_media_base(media: State<'_, AppMedia>) -> String {
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let secrets = app.path().app_data_dir()?.join("credentials.json");
-            let hub = hub_catalog::build(&Endpoints::production(), &secrets);
+            let data_dir = app.path().app_data_dir()?;
+            let saved = std::fs::read_to_string(data_dir.join("site.txt")).ok();
+            let site = hub_catalog::choose_site(saved.as_deref(), option_env!("KVASIR_DOMAIN"))?;
+            let hub = hub_catalog::build(
+                &Endpoints::for_site(&site),
+                &data_dir.join("credentials.json"),
+            );
             let hub = Arc::new(hub);
             let media = hub_media_http::spawn(Arc::clone(&hub))?;
             app.manage(AppHub(hub));
